@@ -2,6 +2,7 @@ Get all table sizes:
 
 (Followed by query to get _schema_s sizes)
 
+<code>
 SELECT
   schema_name,
   relname,
@@ -20,7 +21,8 @@ FROM (
 WHERE schema_name NOT LIKE 'pg_%'
 ORDER BY table_size DESC
 ;
-
+<code>
+  
 Get schema s sizes
 
 FROM (
