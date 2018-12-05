@@ -1,3 +1,7 @@
+Identifier Link of table;
+
+SELECT relname, pg_relation_filepath(oid), relpages FROM pg_class WHERE relname IN('table1','table2');
+
 Get all table sizes:
 
 (Followed by query to get _schema_s sizes)
