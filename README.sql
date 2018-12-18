@@ -155,5 +155,5 @@ SELECT nspname || '.' || relname AS "relation",
    AND nspname !~ '^pg_toast'
  ORDER BY pg_total_relation_size(C.oid) DESC;
  
- 
- 
+ // Show Unlogged Table
+ SELECT relname FROM pg_class WHERE relpersistence = 'u';
