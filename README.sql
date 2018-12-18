@@ -1,11 +1,7 @@
-Identifier Link of table;
-
+-- Identifier Link of table;
 SELECT relname, pg_relation_filepath(oid), relpages FROM pg_class WHERE relname IN('table1','table2');
 
-Get all table sizes:
-
-(Followed by query to get _schema_s sizes)
-
+-- Get all table sizes: (Followed by query to get _schema_s sizes)
 SELECT
   schema_name,
   relname,
@@ -22,12 +18,9 @@ FROM (
          JOIN pg_catalog.pg_namespace ON relnamespace = pg_catalog.pg_namespace.oid
      ) t
 WHERE schema_name NOT LIKE 'pg_%'
-ORDER BY table_size DESC
-;
-<code>
-  
-Get schema s sizes
+ORDER BY table_size DESC;
 
+-- Get schema s sizes
 FROM (
        SELECT
          pg_catalog.pg_namespace.nspname                AS schema_name,
@@ -38,9 +31,7 @@ FROM (
      ) t
 WHERE schema_name NOT LIKE 'pg_%'
 ORDER BY schema_size DESC;
-
-
-
+             
 -- show running queries (pre 9.2)
 SELECT procpid, age(clock_timestamp(), query_start), usename, current_query 
 FROM pg_stat_activity 
@@ -87,14 +78,12 @@ SELECT sum(idx_blks_read) as idx_read, sum(idx_blks_hit)  as idx_hit, (sum(idx_b
 FROM pg_statio_user_indexes;
 
 -- Dump database on remote host to file
-$ pg_dump -U username -h hostname databasename > dump.sql
+pg_dump -U username -h hostname databasename > dump.sql
 
 -- Import dump into existing database
-$ psql -d newdb -f dump.sql
+psql -d newdb -f dump.sql
 
-
-Tables and views used by a given view:
-
+-- Tables and views used by a given view:
 with recursive view_tree(parent_schema, parent_obj, child_schema, child_obj, ind, ord) as 
 (
   select vtu_parent.view_schema, vtu_parent.view_name, 
@@ -116,9 +105,7 @@ select tree.ind || tree.parent_schema || '.' || tree.parent_obj
 from view_tree tree
 order by ord;
 
-
-Possible division by zero when scanning index usage rates, fix:
-
+-- Possible division by zero when scanning index usage rates, fix:
 -- table index usage rates (should not be less than 0.99)
 SELECT relname, 
   CASE WHEN (seq_scan + idx_scan) != 0
@@ -130,8 +117,7 @@ FROM pg_stat_user_tables
 ORDER BY n_live_tup DESC;
 
 
-Check the size (as in disk space) of all databases:
-
+-- Check the size (as in disk space) of all databases:
 SELECT d.datname AS Name, pg_catalog.pg_get_userbyid(d.datdba) AS Owner,
   CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT')
     THEN pg_catalog.pg_size_pretty(pg_catalog.pg_database_size(d.datname)) 
@@ -143,9 +129,8 @@ ORDER BY
     THEN pg_catalog.pg_database_size(d.datname)
     ELSE NULL 
   END;
-
-Check the size (as in disk space) of each table:
-
+                                                               
+-- Check the size (as in disk space) of each table:
 SELECT nspname || '.' || relname AS "relation",
    pg_size_pretty(pg_total_relation_size(C.oid)) AS "total_size"
  FROM pg_class C
@@ -155,5 +140,5 @@ SELECT nspname || '.' || relname AS "relation",
    AND nspname !~ '^pg_toast'
  ORDER BY pg_total_relation_size(C.oid) DESC;
  
- // Show Unlogged Table
- SELECT relname FROM pg_class WHERE relpersistence = 'u';
+-- Show Unlogged Table
+SELECT relname FROM pg_class WHERE relpersistence = 'u';
